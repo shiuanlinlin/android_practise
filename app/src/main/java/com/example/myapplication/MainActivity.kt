@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.R
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,7 +55,8 @@ class MainActivity : ComponentActivity() {
 //                        FullExample()
 //                        ButtonChange ()
 //                        DyamicListEx()
-                          RowStatusEx()
+//                        RowStatusEx()
+                          ModifierStateExample()
 
                     }
                 }
@@ -246,6 +248,22 @@ fun RowStatusEx()
         Text("Value: $value" , fontSize = 20.sp)
         Button(onClick = { value++ }) { Text("+") }
     }
+}
+
+@Composable
+//動態顏色效果
+fun  ModifierStateExample() {
+    var isActive by remember { mutableStateOf(false) }
+    Text(
+        text = if (isActive) "Active" else "Inactive",
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background( if (isActive) Color.Green else Color.Gray)
+            .clickable { isActive = !isActive }
+            .padding(16.dp)
+    )
 }
 
 
