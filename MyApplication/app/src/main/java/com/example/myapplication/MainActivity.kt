@@ -7,25 +7,38 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +64,9 @@ class MainActivity : ComponentActivity() {
 fun CreatBizCards (){
     //畫布就像div
     Surface(modifier = Modifier.fillMaxSize()){
+
+        var isDisplay = remember { mutableStateOf(false) }
+
         Card(
             //鍊式呼叫
             modifier = Modifier.fillMaxSize().padding(12.dp),
@@ -74,7 +90,10 @@ fun CreatBizCards (){
                 //按鈕
                 Button(
                     onClick = {
-                        Log.i("MainActivity","Button click")
+                        //Log.i("MainActivity","Button click")
+                        // isDisplay.value = true
+                        // isDisplay.value = false
+                        isDisplay.value = !isDisplay.value
                     }
                 ){
                     Text(
@@ -82,21 +101,99 @@ fun CreatBizCards (){
                     )
                 }
 
-                Surface (
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp),
-                    color = Color.LightGray,
-                    border = BorderStroke(1.dp, Color.LightGray),
-                    shape = RoundedCornerShape( corner = CornerSize(5.dp)) //圓角
-                ) {
-
+                //判斷按鈕的狀態來顯示資料
+                if(isDisplay.value)
+                {
+                    ButtonContents()
+                }else{
+                    Surface { }
                 }
-
             }
+
+
         }
     }
 }
+
+
+@Preview(showBackground = true)
+@Composable
+private fun ButtonContents() {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp),
+        color = Color.LightGray,
+        border = BorderStroke(1.dp, Color.LightGray),
+        shape = RoundedCornerShape(corner = CornerSize(10.dp)) //圓角
+    ) {
+        ProjectList(data = listOf("專案1","專案2","專案3","專案4"))
+    }
+}
+
+
+
+
+@Composable
+// LazyColumn 建立列表
+fun ProjectList(data: List<String>) {
+    LazyColumn {
+        //在建立的時候會彈出items 要選擇 List
+        items(data) {
+            //item -> Text(text = item)
+            item ->
+                Card (
+                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    colors = CardDefaults.cardColors(Color.White),
+                    border = BorderStroke(1.dp, Color.LightGray),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    shape = RectangleShape
+                )
+                {
+//                    Surface (
+//                        modifier = Modifier.padding(5.dp),
+//                        border = BorderStroke(1.dp, Color.LightGray),
+//                        shadowElevation = 4.dp,
+//                        shape = CircleShape
+//                    ) {
+//                        Image (
+//                            painter = painterResource(R.drawable.profile_image),
+//                            contentDescription = "人像圖",
+//                            modifier = Modifier.size(150.dp)
+//                        )
+//                    }
+                    Row (
+                        modifier = Modifier
+                            .padding(8.dp) //白邊內距離
+                            .background(Color.LightGray)
+                            .padding(8.dp) //灰色底色的內距
+                            .fillMaxWidth(),
+
+                    ) {
+                        //所小圖片沒有反應
+                        ImagesDiv( modifier = Modifier.size(100.dp))
+                        Column (
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = item,
+                                style = MaterialTheme.typography.titleMedium
+
+                            )
+                            Text( text = "超棒傳案" )
+                        }
+
+                    }
+
+                }
+        }
+    }
+}
+
+//remember 會記住上一次的狀態
+
 
 @Composable
 private fun Extracted() {
@@ -114,8 +211,8 @@ private fun Extracted() {
 
 @Composable
 //需要添加預設(modifier:Modifier = Modifier)
-//private fun ImagesDiv(modifier: Modifier = Modifier)
-private fun ImagesDiv()
+private fun ImagesDiv(modifier: Modifier = Modifier)
+//private fun ImagesDiv()
 {
     Surface(
         modifier = Modifier.padding(5.dp),
@@ -139,7 +236,7 @@ private fun ImagesDiv()
 //    )
 //}
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true) //這行可以移到原件上做即時顯示
 @Composable
 fun GreetingPreview() {
     MyApplicationTheme {
